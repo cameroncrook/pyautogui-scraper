@@ -123,7 +123,7 @@ def get_profile_data(html):
 
                     experience_divs = experience_parent.find_all('div', recursive=False)
 
-                    if experience_divs.length > 1:
+                    if len(experience_divs) > 1:
                         # This is for jobs with multiple positions
                         company_url = experience_divs[0].find('a')
                         company_name = company_url.find('span')
@@ -139,7 +139,12 @@ def get_profile_data(html):
 
                     else:
                         # This is for jobs with 1 title
-                        company_url = 'kkk'
+                        company_url = div_dividors[0].find('a')
+                        job_title = div_dividors[1].find('span')
+                        job_title = get_text_value(job_title)
+                        company_duration = div_dividors[1].find_all('span', class_="t-14")
+                        company_name = company_duration[0].find('span')
+                        duration = company_duration[1]
 
                     experience_dict = {
                         "company_url": get_attribute_value(company_url, 'href'),
@@ -147,6 +152,8 @@ def get_profile_data(html):
                         'job_title': job_title,
                         'duration': get_text_value(duration),
                     }
+
+                    experience.append(experience_dict)
 
                     # job_title_parent = experience_data.find('span', class_='mr1 t-bold')
                     # job_title = job_title_parent.find_all('span')
@@ -186,46 +193,55 @@ def get_profile_data(html):
 
                 educations = []
                 for education_data in education_li:
-                    school_parent = education_data.find('span', class_='mr1 hoverable-link-text t-bold')
-                    school = school_parent.find('span').text
+                    school_parent = education_data.find('div', class_='pvs-entity')
+                    school_divs = school_parent.find_all('div', recursive=False)
 
-                    data_parent = education_data.find_all('a', class_='optional-action-target-wrapper')
-                    span_data = data_parent[1].find_all('span', recursive=False)
+                    school_url = school_divs[1].find('a')
+                    school_name = school_divs[1].find('span')
 
-                    if len(span_data) > 1:
-                        degree = trim_text(span_data[0].find('span').text)
-                        duration = span_data[1].find('span').text
+                    degree_info = school_url.find_all('span', recursive=False)
+
+                    if len(degree_info) > 1:
+                        degree = degree_info[0].find('span')
+                        duration = degree_info[1].find('span')
                     else:
                         degree = None
-                        duration = span_data[0].find('span').text
-
-                    duration_split = duration.split('-')
-                    start_year = duration_split[0]
-                    end_year = duration_split[1]
+                        duration = degree_info[0].find('span')
 
                     education = {
-                        'School': trim_text(school),
-                        'degree': degree,
-                        'start_year': trim_text(start_year),
-                        'end_year': trim_text(end_year)
+                        'school_url': get_attribute_value(school_url, 'href'),
+                        'school_name': get_text_value(school_name),
+                        'degree': get_text_value(degree),
+                        'duration': get_text_value(duration),
                     }
+
+                    # school_parent = education_data.find('span', class_='mr1 hoverable-link-text t-bold')
+                    # school = school_parent.find('span').text
+
+                    # data_parent = education_data.find_all('a', class_='optional-action-target-wrapper')
+                    # span_data = data_parent[1].find_all('span', recursive=False)
+
+                    # if len(span_data) > 1:
+                    #     degree = trim_text(span_data[0].find('span').text)
+                    #     duration = span_data[1].find('span').text
+                    # else:
+                    #     degree = None
+                    #     duration = span_data[0].find('span').text
+
+                    # duration_split = duration.split('-')
+                    # start_year = duration_split[0]
+                    # end_year = duration_split[1]
+
+                    # education = {
+                    #     'School': trim_text(school),
+                    #     'degree': degree,
+                    #     'start_year': trim_text(start_year),
+                    #     'end_year': trim_text(end_year)
+                    # }
 
                     educations.append(education)
                 
                 profile_data['education'] = educations
-
-            if heading == 'Skills':
-                skills_ul = section.find('ul', class_='pvs-list')
-                skills_li = skills_ul.find_all('li', class_='pvs-list__item--line-separated', recursive=False)
-
-                skills = []
-                for skill_data in skills_li:
-                    skill_parent = skill_data.find('span', class_='mr1 hoverable-link-text t-bold')
-                    skill = skill_parent.find('span').text
-
-                    skills.append(trim_text(skill))
-
-                profile_data['skills'] = skills
 
     return profile_data
                     

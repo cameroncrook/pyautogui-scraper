@@ -58,6 +58,7 @@ def bezier_curve(points, num_samples):
     return curve_x, curve_y
 
 def move_mouse(x, y, click=False):
+
     # Define the control points for the Bézier curve
     points = get_intermediate_points((x, y))
 
@@ -71,6 +72,7 @@ def move_mouse(x, y, click=False):
         pyautogui.moveTo(x, y, duration=duration)
 
     if click == True:
+        delay(kind='clicking')
         pyautogui.click()
 
 def get_intermediate_points(ending_cords: tuple):
@@ -138,6 +140,9 @@ def delay(kind='none'):
     if kind == 'typing':
         num = random.uniform(0.1, 0.5)
         num = round(num, 3)
+    elif kind == 'clicking':
+        num = random.uniform(0.5, 2.0)
+        num = round(num, 3)
     elif kind == 'load':
         num = random.uniform(4.0, 8.0)
         num = round(num, 3)
@@ -149,6 +154,26 @@ def delay(kind='none'):
         num = round(num, 3)
 
     time.sleep(num)
+
+def scroll(distance=0):
+    # This function takes a choses distance and splits it up into smaller scroll incriments
+    test_dist = random.randint(-500, -100)
+    
+    scrolling = True
+    total_scroll = 0
+    while scrolling:
+        pyautogui.scroll(test_dist)
+
+        total_scroll += test_dist
+
+        response = input('continue? ')
+
+        if response == 'q':
+            scrolling = False
+        else:
+            test_dist = random.randint(-500, -100)
+
+    print(total_scroll)
 
 # add scrolling and typing functions
 # add ranomized movements

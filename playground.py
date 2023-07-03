@@ -1,12 +1,12 @@
-from lib.html_snippets.profile import chases_profile
-from scraping.LI_scraping import *
+from lib.html_snippets.SalesNav import results_html
+from scraping.salesNav_scraping import *
 from scraping.scraper_tools  import *
 import json
 
 def main():
-    profile_data = get_profile_data(chases_profile)
+    result_data = get_lead_data(results_html)
 
-    print(json.dumps(profile_data, indent=4))
+    print(len(result_data))
 
     
 

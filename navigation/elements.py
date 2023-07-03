@@ -10,6 +10,8 @@ elements = {
     'nav_home': [[874, 78], [905, 114]], # Home button on top nav bar
     'nav_network': [[940, 77], [1002, 118]], # Network button on top nav bar
     'nav_messaging': [[1107, 77], [1154, 114]], # Messages button on top nav bar
+    'nav_salesNav': [(1457, 74), (1507, 114)], # Button in top nav to navigate to sales navigator from Linkedin
+    'sales_search_box': [(357, 256), (1880, 1034)], # This is the box containing all the search results in a Sales Nav search
 }
 
 inspect_elements = {
@@ -27,4 +29,8 @@ inspect_elements = {
     'LI_shortcut': [(574, 430), (679, 533)],
     'signin_btn': [(1149, 91), (1229, 125)],
     'login_submit': [(552, 561), (811, 609)],
+    'nav_salesNav': [(1146, 77), (1199, 115)],
+    'sales_search_box': [(358, 258), (1259, 1031)],
+    'next_btn': [(937, 247), (1018, 272)], # This is the 'Next' button when viewing a profile in the Sales Nav search results page
+    'profile_pic': [(405, 272), (443, 318)], # This is the first profile image in a result list in a Sales Nav search
 }

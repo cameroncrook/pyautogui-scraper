@@ -1,7 +1,9 @@
-import bs4
+from bs4 import BeautifulSoup
 from scraping.scraper_tools import *
 
-def get_company_data(soup):
+def get_company_data(html):
+    soup = soup = BeautifulSoup(html, 'html.parser')
+
     account = soup.find('div', id='account')
 
     img = account.find('img', attrs={'data-anonymize': 'company-logo'})
@@ -22,7 +24,9 @@ def get_company_data(soup):
 
     return company_data
 
-def get_company_data_other(soup):
+def get_company_data_other(html):
+    soup = BeautifulSoup(html, 'html.parser')
+
     overview = soup.find('p', class_='company-details-panel-description')
 
     company_info = soup.find_all('dl', 'company-details-panel__content-header')
@@ -39,7 +43,9 @@ def get_company_data_other(soup):
 
     return company_data
 
-def get_profile_data(soup):
+def get_profile_data(html):
+    soup = BeautifulSoup(html, 'html.parser')
+
     top_card = soup.find('section', id='profile-card-section')
 
     img = top_card.find('img', attrs={'data-anonymize': 'headshot-photo'})
@@ -144,7 +150,9 @@ def get_profile_data(soup):
 
     return profile_data
 
-def get_message_data(soup):
+def get_message_data(html):
+    soup = BeautifulSoup(html, 'html.parser')
+
     message_data = []
 
     message_li = soup.find_all('li', class_='conversation-list-item')
@@ -164,7 +172,9 @@ def get_message_data(soup):
 
     return message_data
 
-def get_thread_data(soup):
+def get_thread_data(html):
+    soup = BeautifulSoup(html, 'html.parser')
+
     thread_data = []
 
     thread_container = soup.find('section', class_='thread-container')
@@ -201,7 +211,9 @@ def get_thread_data(soup):
 
     return thread_data
 
-def get_lead_data(soup):
+def get_lead_data(html):
+    soup = BeautifulSoup(html, 'html.parser')
+
     lead_data = []
 
     lead_results = soup.find('ol', class_='artdeco-list')
@@ -255,20 +267,21 @@ def get_lead_data(soup):
         }
 
         connections_parent = individual.find('ol')
-        connections_li = connections_parent.find_all('li', recursive=False)
+        if connections_parent != None:
+            connections_li = connections_parent.find_all('li', recursive=False)
 
-        for li in connections_li:
-            data = li.find('span').text
+            for li in connections_li:
+                data = li.find('span').text
 
-            if 'TeamLink' in data:
-                profile_data['teamlink_connections'] = trim_text(data)
-            elif 'mutual' in data:
-                connections = trim_text(data)
-                profile_data['mutual_connections'] = get_digits(connections)
-            elif 'Linkedin' in data:
-                profile_data['activity'] = trim_text(data)
-            else:
-                profile_data['other'] = trim_text(data)
+                if 'TeamLink' in data:
+                    profile_data['teamlink_connections'] = trim_text(data)
+                elif 'mutual' in data:
+                    connections = trim_text(data)
+                    profile_data['mutual_connections'] = get_digits(connections)
+                elif 'Linkedin' in data:
+                    profile_data['activity'] = trim_text(data)
+                else:
+                    profile_data['other'] = trim_text(data)
 
         city, state, country = parse_address(profile_data['unparsed_location'])
         profile_data['city'] = city
